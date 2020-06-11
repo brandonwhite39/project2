@@ -16,6 +16,7 @@
                 socket.on('connect', () =>{
 
                     document.querySelector('#channelmake').onsubmit = () =>{
+                        document.querySelector('#submit').disabled = true;
                         var channel = document.querySelector('#channelname').value;
                         channel = channel.toLowerCase();
                         if ("{{channels}}".indexOf(channel) != -1){
@@ -39,7 +40,7 @@
         <h1>Create a channel</h1>
         <form id="channelmake">
             <input id="channelname" autocomplete="off" placeholder="Channel Name" type="text">
-            <input type="submit">
+            <input id="submit" type="submit">
         </form>
         
         <div>Channels: 

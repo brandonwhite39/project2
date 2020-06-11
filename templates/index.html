@@ -1,0 +1,38 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <script>
+        
+            document.addEventListener('DOMContentLoaded', function(){
+                
+                document.querySelector('#username').onsubmit = function(){
+                    if (!localStorage.getItem('username')){
+                        const name = document.querySelector('#name').value;
+                        localStorage.setItem('username', name);
+                        alert(`Hello ${name}!`)
+                        return false;
+                    }
+                    else{
+                        name= localStorage.getItem('username');
+                        document.querySelector('#user').innerHTML = name;
+                        alert(`Name is already set to ${name}!`)
+                        return false;
+                    }
+                    
+                };
+            });
+
+            
+        </script>
+
+    </head>
+    <body>
+        <form id="username">
+            <input id="name" autocomplete="off" placeholder="Username" type="text">
+            <input type="submit">
+        </form>
+        <h1 id="user"></h1>
+
+        <a href="{{ url_for('channel') }}">Channels</a>
+    </body>
+</html>

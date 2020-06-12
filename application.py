@@ -8,6 +8,7 @@ app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
 socketio = SocketIO(app)
 
 channels = []
+messages = {}
 
 @app.route("/")
 def index():
@@ -16,7 +17,6 @@ def index():
 @app.route("/channel")
 def channel():
     return render_template("channel.html")
-
 
 @app.route("/createchannel")
 def createchannel():
@@ -30,5 +30,11 @@ def chatroom(channel):
 def newChannel(channel):
     channels.append(channel)
     data = {"channels": channels}
+    messages['channel'] = []
     emit("all channels", data, broadcast=True)
+
+@socketio.on("submit message")
+def message(data):
+    selection = data["selection"]
+    emit("submit message", {"selection": selection}, broadcast=True)
 

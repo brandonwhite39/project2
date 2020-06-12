@@ -24,17 +24,24 @@ def createchannel():
 
 @app.route("/chatroom/<channel>")
 def chatroom(channel):
-    return render_template("chatroom.html", channel=channel)
+    return render_template("chatroom.html", channel=channel, messages=messages)
 
 @socketio.on("add channel")
 def newChannel(channel):
     channels.append(channel)
     data = {"channels": channels}
-    messages['channel'] = []
+    
+    messages[channel] = []
+    print(channels)
+    print(messages)
     emit("all channels", data, broadcast=True)
 
 @socketio.on("submit message")
 def message(data):
     selection = data["selection"]
-    emit("submit message", {"selection": selection}, broadcast=True)
+    #append to messages["channel"], pass into emit
+    channel = data["channelss"]
+    messages[channel].append(selection)
+    emit("submit message", {"messages": messages[channel]}, broadcast=True)
+
 

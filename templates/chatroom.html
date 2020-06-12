@@ -8,19 +8,16 @@
                 var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
                 const channelss = "{{channel}}"
                 socket.on('connect', () =>{
-
                     document.querySelectorAll('#submit').forEach(button => {
                         button.onclick = () => {
-                            const selection = document.querySelector('#message').value;  
-                            socket.emit('submit message', {'selection': selection});
+                            const selection = document.querySelector('#message').value; 
+                            socket.emit('submit message', {'selection': selection, 'channelss':channelss});
                         };
                     });
                 });
                 
                 socket.on('submit message', data =>{
-                    const li = document.createElement('li');
-                    li.innerHTML = `Message: ${data.selection}`;
-                    document.querySelector('#allmessages').append(li);
+                    document.querySelector('#aMessages').innerHTML = data.messages;
                     return false;
                 });
             });
@@ -31,10 +28,9 @@
         <h1>Chatroom</h1>
         <h3>Current channel: {{channel}}</h3>
         <p>Messages: </p>
-        <ul id="allmessages"></ul>
+        <ul id="aMessages">{{messages[channel]}}</ul>
         <input id="message" placeholder="Enter a new message..." type="text">
         <button id="submit">Send</button>
-    
     </body>
 
 </html>

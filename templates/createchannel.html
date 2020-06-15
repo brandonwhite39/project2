@@ -6,16 +6,13 @@
         <script>
             document.addEventListener('DOMContentLoaded', () => { 
                 var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
+                if(localStorage.getItem('channel')){
+                    alert(`Returning to channel ${localStorage.getItem('channel')}...`)
+                    const channel = localStorage.getItem('channel');
+                    window.location.href = `http://127.0.0.1:5000/chatroom/${channel}`;
+                }
                 
                 socket.on('all channels', function(data){
-                    /*
-                    Something like this forloop for updating and displaying new 
-                    values without needing to refresh.
-                    for (channel in data.channels){
-                       // document.querySelector('h3').innerHTML = data.channel;
-                        document.querySelector('a').innerHTML = channel;
-                    }
-                    */
                     window.onload = function(){
                         document.querySelector('h3').innerHTML = data.channels;
                     };
@@ -37,9 +34,15 @@
                         }
                         
                     };
-                });
+
+                    document.querySelector('a').onclick = () =>{
+                        alert(`channel chosen! ${"{{channel}}"}`);
+                        if(!localStorage.getItem('channel')){
+                            localStorage.setItem('channel', channelss);
+                        }
                 
-                
+                    }
+                });      
             });
         </script>
     </head>

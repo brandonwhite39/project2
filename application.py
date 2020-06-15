@@ -1,7 +1,7 @@
 import os
 
 from flask import Flask, render_template
-from flask_socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit, join_room, leave_room
 
 app = Flask(__name__)
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")
@@ -30,7 +30,6 @@ def chatroom(channel):
 def newChannel(channel):
     channels.append(channel)
     data = {"channels": channels}
-    
     messages[channel] = []
     print(channels)
     print(messages)
@@ -38,10 +37,25 @@ def newChannel(channel):
 
 @socketio.on("submit message")
 def message(data):
-    selection = data["selection"]
+    
+    room=data["channelss"]
+    join_room(data["channelss"])
+    selection = data["selection"]#message
+    name = data["name"]#user name who wrote message
+    h = data["h"]#hour of message
+    m = data["m"]#minute of message
+    s = data["s"]#second of message
+    fullmsg = "%s (%s:%s:%s): %s" % (name, h, m, s, selection)
     #append to messages["channel"], pass into emit
     channel = data["channelss"]
-    messages[channel].append(selection)
-    emit("submit message", {"messages": messages[channel]}, broadcast=True)
-
+    print(len(messages[channel]))
+    if(len(messages[channel]) == 100):#if 100 messages already
+        messages[channel].pop(0)
+        messages[channel].append(fullmsg)
+        emit("submit message", {"messages": selection, "name": name,
+                                "fullmsg":fullmsg}, broadcast=True, room=room)
+    else:
+        messages[channel].append(fullmsg)  
+        emit("submit message", {"messages": selection, "name": name,
+                                "fullmsg":fullmsg}, broadcast=True, room=room)
 

@@ -6,18 +6,45 @@
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
-                const channelss = "{{channel}}"
+                const channelss = "{{channel}}";
+                localStorage.setItem('channel', channelss);
+                document.querySelector('#back').onclick = () =>{
+                    alert('Returning to channel home...');
+                    localStorage.setItem('channel', '');
+                    
+                    window.location.href="http://127.0.0.1:5000/createchannel";
+                };
+
                 socket.on('connect', () =>{
                     document.querySelectorAll('#submit').forEach(button => {
                         button.onclick = () => {
+                            let timestamp = Date.now();
+                       
+                            var h = new Date(timestamp).getHours();
+                            var m = new Date(timestamp).getMinutes();
+                            var s = new Date(timestamp).getSeconds();
+                            h = (h<10) ? '0' + h : h;
+                            m = (m<10) ? '0' + m : m;
+                            s = (s<10) ? '0' + s : s;
+                            const name = localStorage.getItem('username');
                             const selection = document.querySelector('#message').value; 
-                            socket.emit('submit message', {'selection': selection, 'channelss':channelss});
+                            socket.emit('submit message', {'selection': selection, 'channelss':channelss, 'name': name,
+                             'h': h, 'm': m, 's': s});
                         };
                     });
                 });
                 
                 socket.on('submit message', data =>{
-                    document.querySelector('#aMessages').innerHTML = data.messages;
+                    let timestamp = Date.now();
+                    var h = new Date(timestamp).getHours();
+                    var m = new Date(timestamp).getMinutes();
+                    var s = new Date(timestamp).getSeconds();
+                    h = (h<10) ? '0' + h : h;
+                    m = (m<10) ? '0' + m : m;
+                    s = (s<10) ? '0' + s : s;
+                    const li = document.createElement('li');
+                    li.innerHTML = `${data.name} (${h}:${m}:${s}): ${data.messages}`;
+                    document.querySelector('#aMessages').append(li);
                     return false;
                 });
             });
@@ -27,8 +54,13 @@
     <body>
         <h1>Chatroom</h1>
         <h3>Current channel: {{channel}}</h3>
+        <button id="back">Back</button>
         <p>Messages: </p>
-        <ul id="aMessages">{{messages[channel]}}</ul>
+        <ul id="aMessages">
+            {% for x in messages[channel] %}
+            {{x}}<br>
+            {% endfor %}
+        </ul>
         <input id="message" placeholder="Enter a new message..." type="text">
         <button id="submit">Send</button>
     </body>

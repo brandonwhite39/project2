@@ -4,21 +4,18 @@
         <script>
         
             document.addEventListener('DOMContentLoaded', function(){
-                
+                //If already username in local storage, do not prompt setting username again
+                if (localStorage.getItem('username')){
+                    document.querySelector('h3').style.display = "none";
+                    document.querySelector('form').style.display = "none";
+                    const n = localStorage.getItem('username');
+                    alert(`Welcome back, ${n}!`);
+                }
                 document.querySelector('#username').onsubmit = function(){
-                    if (!localStorage.getItem('username')){
-                        const name = document.querySelector('#name').value;
-                        localStorage.setItem('username', name);
-                        alert(`Hello ${name}!`)
-                        return false;
-                    }
-                    else{
-                        name= localStorage.getItem('username');
-                        document.querySelector('#user').innerHTML = name;
-                        alert(`Name is already set to ${name}!`)
-                        return false;
-                    }
-                    
+                    const name = document.querySelector('#name').value;
+                    localStorage.setItem('username', name);
+                    alert(`Welcome, ${name}!`)
+                    return false;
                 };
             });
 
@@ -27,12 +24,14 @@
 
     </head>
     <body>
+        <h1>Welcome to Flack the Online Messaging Service!</h1>
+        <h3>Enter your username:</h3>
         <form id="username">
             <input id="name" autocomplete="off" placeholder="Username" type="text">
             <input type="submit">
         </form>
         <h1 id="user"></h1>
 
-        <a href="{{ url_for('channel') }}">Channels</a>
+        <a href="{{ url_for('createchannel') }}">Channels</a>
     </body>
 </html>

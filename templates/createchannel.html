@@ -32,11 +32,9 @@
                             alert("Chatroom has been successfully added.");
                             socket.emit('add channel', channel);                     
                         }
-                        
                     };
 
                     document.querySelector('a').onclick = () =>{
-                        alert(`channel chosen! ${"{{channel}}"}`);
                         if(!localStorage.getItem('channel')){
                             localStorage.setItem('channel', channelss);
                         }

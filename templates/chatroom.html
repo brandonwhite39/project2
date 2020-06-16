@@ -8,25 +8,25 @@
                 var socket = io.connect(location.protocol + '//' + document.domain + ':' + location.port);
                 const channelss = "{{channel}}";
                 localStorage.setItem('channel', channelss);
+                const name = localStorage.getItem('username');
                 document.querySelector('#back').onclick = () =>{
                     alert('Returning to channel home...');
-                    localStorage.setItem('channel', '');
-                    
+                    localStorage.setItem('channel', '');                   
                     window.location.href="http://127.0.0.1:5000/createchannel";
                 };
 
                 socket.on('connect', () =>{
+                    const mess = `${name} has entered the channel ${channelss}.`;
+                    socket.emit('join room', {'mess': mess, 'channelss': channelss});
                     document.querySelectorAll('#submit').forEach(button => {
                         button.onclick = () => {
                             let timestamp = Date.now();
-                       
                             var h = new Date(timestamp).getHours();
                             var m = new Date(timestamp).getMinutes();
                             var s = new Date(timestamp).getSeconds();
                             h = (h<10) ? '0' + h : h;
                             m = (m<10) ? '0' + m : m;
                             s = (s<10) ? '0' + s : s;
-                            const name = localStorage.getItem('username');
                             const selection = document.querySelector('#message').value; 
                             socket.emit('submit message', {'selection': selection, 'channelss':channelss, 'name': name,
                              'h': h, 'm': m, 's': s});
@@ -35,18 +35,16 @@
                 });
                 
                 socket.on('submit message', data =>{
-                    let timestamp = Date.now();
-                    var h = new Date(timestamp).getHours();
-                    var m = new Date(timestamp).getMinutes();
-                    var s = new Date(timestamp).getSeconds();
-                    h = (h<10) ? '0' + h : h;
-                    m = (m<10) ? '0' + m : m;
-                    s = (s<10) ? '0' + s : s;
                     const li = document.createElement('li');
-                    li.innerHTML = `${data.name} (${h}:${m}:${s}): ${data.messages}`;
-                    document.querySelector('#aMessages').append(li);
-                    return false;
+                    li.innerHTML = `${data.name} (${data.h}:${data.m}:${data.s}): ${data.messages}`;
+                    document.querySelector('#aMessages').append(li);          
                 });
+                socket.on('new message', data =>{
+                    const li = document.createElement('li');
+                    li.innerHTML = `${data.text}`;
+                    document.querySelector('#aMessages').append(li);
+                });
+
             });
         </script>
     </head>

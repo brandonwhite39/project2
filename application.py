@@ -14,10 +14,6 @@ messages = {}
 def index():
     return render_template("index.html")
 
-@app.route("/channel")
-def channel():
-    return render_template("channel.html")
-
 @app.route("/createchannel")
 def createchannel():
     return render_template("createchannel.html", channels=channels)
@@ -53,9 +49,17 @@ def message(data):
         messages[channel].pop(0)
         messages[channel].append(fullmsg)
         emit("submit message", {"messages": selection, "name": name,
-                                "fullmsg":fullmsg}, broadcast=True, room=room)
+                                "fullmsg":fullmsg, "h":h,
+                                "m":m, "s":s}, broadcast=True, room=room)
     else:
-        messages[channel].append(fullmsg)  
+        messages[channel].append(fullmsg)
         emit("submit message", {"messages": selection, "name": name,
-                                "fullmsg":fullmsg}, broadcast=True, room=room)
+                                "fullmsg":fullmsg, "h":h,
+                                "m":m, "s":s}, broadcast=True, room=room)
 
+@socketio.on("join room")
+def join(data):
+    text = data["mess"]
+    room = data["channelss"]
+    print("can u see me")
+    emit("new message", {"text": text}, broadcast=True)

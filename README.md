@@ -24,3 +24,6 @@ templates folder - contains all html + javascript code
 templates/index - html + javascript for home page registration of use
 templates/createchannel - html + javascript for creating and viewing channels
 templates/chatroom - html + javascript for entering chatroom
+
+Personalized touch:
+Username and channel is broadcasted to everyone in all channels when a user joins a channel

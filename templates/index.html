@@ -11,10 +11,16 @@
                     const n = localStorage.getItem('username');
                     alert(`Welcome back, ${n}!`);
                 }
+                else{
+                    document.querySelector('a').style.display = "none";
+                }
                 document.querySelector('#username').onsubmit = function(){
                     const name = document.querySelector('#name').value;
                     localStorage.setItem('username', name);
                     alert(`Welcome, ${name}!`)
+                    document.querySelector('h3').style.display = "none";
+                    document.querySelector('form').style.display = "none";
+                    document.querySelector('a').style.display = "block";
                     return false;
                 };
             });
